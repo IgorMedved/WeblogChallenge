@@ -1,2 +1,5 @@
 
 /bin/
+# don't copy .log without need to repository
+*.log
+*.gz
