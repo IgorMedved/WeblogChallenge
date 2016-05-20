@@ -19,16 +19,16 @@ public class WebLogChallenge {
 		
 		//Define MapReduce job
 		Configuration conf = new Configuration();
-	    Job job = Job.getInstance(conf, "weblog challenge");
-	    job.setJarByClass(WebLogChallenge.class);
-	    job.setMapperClass(WebLogMapper.class);
+	    Job preOrderJob = Job.getInstance(conf, "weblog challenge");
+	    preOrderJob.setJarByClass(WebLogChallenge.class);
+	    preOrderJob.setMapperClass(SessionizingMapper.class);
 	   // job.setCombinerClass(IntSumReducer.class);
-	    job.setReducerClass(IntSumReducer.class);
-	    job.setOutputKeyClass(Text.class);
-	    job.setOutputValueClass(IntWritable.class);
-	    FileInputFormat.addInputPath(job, new Path(args[0]));
-	    FileOutputFormat.setOutputPath(job, new Path(args[1]));
-	    System.exit(job.waitForCompletion(true) ? 0 : 1);
+	    preOrderJob.setReducerClass(IntSumReducer.class);
+	    preOrderJob.setOutputKeyClass(Text.class);
+	    preOrderJob.setOutputValueClass(IntWritable.class);
+	    FileInputFormat.addInputPath(preOrderJob, new Path(args[0]));
+	    FileOutputFormat.setOutputPath(preOrderJob, new Path(args[1]));
+	    System.exit(preOrderJob.waitForCompletion(true) ? 0 : 1);
 	}
 
 }

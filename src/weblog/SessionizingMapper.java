@@ -7,11 +7,11 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class WebLogMapper extends Mapper<Object, Text, Text, IntWritable>
+public class SessionizingMapper extends Mapper<Object, Text, Text, TextPair>
 {
 
 	@Override
-	protected void map(Object key, Text value, Mapper<Object, Text, Text, IntWritable>.Context context)
+	protected void map(Object key, Text value, Mapper<Object, Text, Text, TextPair>.Context context)
 			throws IOException, InterruptedException 
 	{
 		String delim = "\" \"|\" | \"|\"";
@@ -23,9 +23,7 @@ public class WebLogMapper extends Mapper<Object, Text, Text, IntWritable>
 		String hitTime = tokens1[0];
 		String url = tokens[1].split(" ")[0]; //get url ignoring REST info
 		
-		context.write(new Text(ip), arg1);
-		StringTokenizer sTkn = new StringTokenizer(line, "\"");
-		
+		context.write(new Text(ip), new TextPair (hitTime, url));
 	}
 	
 }
