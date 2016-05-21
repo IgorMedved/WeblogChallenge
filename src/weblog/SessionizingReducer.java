@@ -3,6 +3,9 @@ package weblog;
 import java.text.ParsePosition;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -22,10 +25,16 @@ public class SessionizingReducer extends Reducer<Text, TextPair, TextPair, TextA
 	public void reduce(Text key, Iterable<TextPair> values, Context context)
 	{
 		String  dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS";
+
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
 		
 		Iterator<TextPair> value = values.iterator();
 		LocalDateTime sessionStart=null;
+
+		
+		
+		
+
 		long startTimeInMillis;
 		long lastTimeInMillis;
 		TextPair tempPair = value.hasNext()? value.next(): null;
@@ -33,22 +42,27 @@ public class SessionizingReducer extends Reducer<Text, TextPair, TextPair, TextA
 		if (tempPair!=null)
 		{
 			List<Text> urls = new ArrayList<>();
+
 			sessionStart = LocalDateTime.parse(tempPair.getDate().toString(), formatter);
 			urls.add(value.next().getUrl());
 		
 		
 			LocalDateTime lastTime =  sessionStart;
-		
-			
-		
 			LocalDateTime currentTime;
 			
+
+		
+		
+			
+		
+		
+			
+			long currentTimeInMillis;
+
 			while (value.hasNext())
 			{
 				tempPair = value.next();
 				
-				currentTime = format.parse(tempPair.getDate().toString(), new ParsePosition(0));
-				currentTimeInMillis = currentTime.getTime();
 				if (currentTimeInMillis - lastTimeInMillis < TIME_WINDOW)
 				{
 					lastTimeInMillis = currentTimeInMillis;
