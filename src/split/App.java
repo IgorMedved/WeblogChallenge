@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.StringTokenizer;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class App {
 
@@ -19,6 +21,14 @@ public class App {
 		
 		//String line = "Hello \"Beauty aaa\" \"Where did you go\"";
 		String delim = "\" \"|\" | \"|\"";
+		
+		String dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+		//LocalTime test = new LocalTime(555555555l);
+		
+		//DateFormat format = new SimpleDateFormat(dateFormat);
+		
+		//System.out.println(format.toString());
 		
 		
 		
@@ -40,6 +50,15 @@ public class App {
 				String time = tokens[0].split(" ")[0];
 				String url = tokens[1].split(" ")[1];
 				System.out.println(ip + " " + time + " " + url);
+				
+				LocalDateTime dateTime = LocalDateTime.parse(time, formatter);
+				//ParsePosition pos = new ParsePosition(0);
+				//Date date = format.parse(time, pos);
+				
+				if (dateTime == null)
+					System.out.println("Error in line " + counter);
+				else
+					System.out.println(dateTime);
 				/*for (String token: tokens)
 				{
 					System.out.println(token);
