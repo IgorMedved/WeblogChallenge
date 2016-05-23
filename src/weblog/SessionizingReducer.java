@@ -1,13 +1,9 @@
 package weblog;
 
-import java.text.ParsePosition;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.text.DateFormat;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,23 +45,18 @@ public class SessionizingReducer extends Reducer<Text, TextPair, TextPair, TextA
 		
 			LocalDateTime lastTime =  sessionStart;
 			LocalDateTime currentTime;
+			Duration clickTime;
 			
-
-		
-		
-			
-		
-		
-			
-			long currentTimeInMillis;
 
 			while (value.hasNext())
 			{
 				tempPair = value.next();
+				currentTime = LocalDateTime.parse(tempPair.getDate().toString(), formatter);
+				clickTime = Duration.between(lastTime, currentTime);
 				
-				if (currentTimeInMillis - lastTimeInMillis < TIME_WINDOW)
+				if (clickTime.toNanos()/1000 < TIME_WINDOW)
 				{
-					lastTimeInMillis = currentTimeInMillis;
+					lastTime = currentTime;
 					urls.add(tempPair.getUrl());
 				}
 				else // write down old session initiate new one
@@ -78,7 +69,29 @@ public class SessionizingReducer extends Reducer<Text, TextPair, TextPair, TextA
 			
 			}
 		}
+		
 	}
+	
+	public String format (Duration sessionTime)
+	{
+		
+		Duration temp;
+		long days = sessionTime.toDays();
+		temp = sessionTime.minusDays(days);
+		long hours = temp.toHours();
+		temp = temp.minusHours(hours);
+		long minutes = temp.toMinutes();
+		temp = temp.minusMinutes(minutes);
+		long seconds = temp.getSeconds();
+		temp = temp.minusSeconds(seconds);
+		long micros = temp.getNano()/1000;
+		
+		
+		
+		return String.format(arg0, arg1);
+	}
+	
+	
 
 	public static class TextArrayWritable extends ArrayWritable
 	{
