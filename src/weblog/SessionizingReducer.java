@@ -1,5 +1,6 @@
 package weblog;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -61,7 +62,17 @@ public class SessionizingReducer extends Reducer<Text, TextPair, TextPair, TextA
 				}
 				else // write down old session initiate new one
 				{
+					Duration sessionTime = Duration.between(sessionStart, currentTime);
+					TextPair outKey = new TextPair (key, new Text(Utils.format(sessionTime)));
 					
+					try
+					{
+						context.write(outKey, new TextArrayWritable ((Text[])urls.toArray()));
+					} catch (IOException | InterruptedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 				}
 				
@@ -72,24 +83,6 @@ public class SessionizingReducer extends Reducer<Text, TextPair, TextPair, TextA
 		
 	}
 	
-	public String format (Duration sessionTime)
-	{
-		
-		Duration temp;
-		long days = sessionTime.toDays();
-		temp = sessionTime.minusDays(days);
-		long hours = temp.toHours();
-		temp = temp.minusHours(hours);
-		long minutes = temp.toMinutes();
-		temp = temp.minusMinutes(minutes);
-		long seconds = temp.getSeconds();
-		temp = temp.minusSeconds(seconds);
-		long micros = temp.getNano()/1000;
-		
-		
-		
-		return String.format(arg0, arg1);
-	}
 	
 	
 
